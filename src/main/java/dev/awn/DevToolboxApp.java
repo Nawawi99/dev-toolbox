@@ -8,13 +8,13 @@ import javafx.stage.Stage;
 
 import java.io.InputStream;
 
-public class BackendToolboxApp extends Application {
+public class DevToolboxApp extends Application {
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(new AppView().root(), 1280, 820);
-        scene.getStylesheets().add(BackendToolboxApp.class.getResource("/styles.css").toExternalForm());
-        stage.setTitle("Backend Toolbox");
-        InputStream icon = BackendToolboxApp.class.getResourceAsStream("/icons/backend-toolbox.png");
+        scene.getStylesheets().add(DevToolboxApp.class.getResource("/styles.css").toExternalForm());
+        stage.setTitle("Dev Toolbox");
+        InputStream icon = DevToolboxApp.class.getResourceAsStream("/icons/dev-toolbox.png");
         if (icon != null) {
             stage.getIcons().add(new Image(icon));
         }

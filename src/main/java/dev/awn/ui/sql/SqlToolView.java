@@ -32,6 +32,7 @@ public class SqlToolView implements ToolView {
                         Ui.button("Capitalize Keywords", () -> run(() -> service.capitalize(input.getText()))),
                         Ui.button("Java String", () -> run(() -> service.toJavaString(input.getText()))),
                         Ui.button("Text Block", () -> run(() -> service.toTextBlock(input.getText()))),
+                        Ui.button("Visualize SQL", () -> run(() -> service.visualizeStructure(input.getText()))),
                         Ui.button("JSON to INSERT", () -> run(() -> service.insertsFromJson(tableName.getText(), input.getText()))),
                         Ui.copyButton(output),
                         Ui.clearButton(this::clear)

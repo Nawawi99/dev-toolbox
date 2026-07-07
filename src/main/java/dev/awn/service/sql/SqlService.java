@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SqlService {
@@ -41,6 +42,54 @@ public class SqlService {
         return "\"\"\"\n" + sql.replace("\"\"\"", "\\\"\\\"\\\"") + "\n\"\"\";";
     }
 
+    public String visualizeStructure(String input) {
+        String sql = minify(input);
+        if (!sql.toLowerCase(Locale.ROOT).startsWith("select ")) {
+            throw new IllegalArgumentException("SQL Visualizer currently supports SELECT queries.");
+        }
+
+        String lower = sql.toLowerCase(Locale.ROOT);
+        String select = section(sql, lower, "select", "from");
+        String fromAndJoins = section(sql, lower, "from", "where", "group by", "having", "order by", "limit");
+        String where = section(sql, lower, "where", "group by", "having", "order by", "limit");
+        String groupBy = section(sql, lower, "group by", "having", "order by", "limit");
+        String having = section(sql, lower, "having", "order by", "limit");
+        String orderBy = section(sql, lower, "order by", "limit");
+        String limit = section(sql, lower, "limit");
+
+        StringBuilder out = new StringBuilder();
+        out.append("SQL Visualizer\n\n");
+        out.append("[FROM]\n");
+        out.append("  table: ").append(baseTable(fromAndJoins)).append('\n');
+
+        List<String> joins = joins(fromAndJoins);
+        for (String join : joins) {
+            out.append("    |\n");
+            out.append("    v\n");
+            out.append("[JOIN]\n");
+            out.append("  ").append(join).append('\n');
+        }
+
+        if (!where.isBlank()) {
+            appendNode(out, "WHERE", "filter rows: " + where);
+        }
+        if (!groupBy.isBlank()) {
+            appendNode(out, "GROUP BY", "group rows: " + groupBy);
+        }
+        if (!having.isBlank()) {
+            appendNode(out, "HAVING", "filter groups: " + having);
+        }
+        appendNode(out, "SELECT", "return data: " + select);
+        if (!orderBy.isBlank()) {
+            appendNode(out, "ORDER BY", "sort result: " + orderBy);
+        }
+        if (!limit.isBlank()) {
+            appendNode(out, "LIMIT", "limit result: " + limit);
+        }
+        out.append("\nThis is a query structure visualizer, not a database execution plan.");
+        return out.toString();
+    }
+
     public String insertsFromJson(String table, String jsonArray) throws Exception {
         if (table == null || table.isBlank()) {
             throw new IllegalArgumentException("Enter a table name.");
@@ -67,5 +116,49 @@ public class SqlService {
         if (node == null || node.isNull()) return "NULL";
         if (node.isNumber() || node.isBoolean()) return node.asText();
         return "'" + node.asText().replace("'", "''") + "'";
+    }
+
+    private String section(String sql, String lower, String start, String... ends) {
+        int startIndex = lower.indexOf(start);
+        if (startIndex < 0) return "";
+        int contentStart = startIndex + start.length();
+        int endIndex = sql.length();
+        for (String end : ends) {
+            int candidate = lower.indexOf(end, contentStart);
+            if (candidate >= 0 && candidate < endIndex) {
+                endIndex = candidate;
+            }
+        }
+        return sql.substring(contentStart, endIndex).trim();
+    }
+
+    private String baseTable(String fromAndJoins) {
+        if (fromAndJoins == null || fromAndJoins.isBlank()) return "unknown source";
+        String[] parts = fromAndJoins.split("(?i)\\b(left|right|inner|full|cross)?\\s*join\\b", 2);
+        return parts[0].trim();
+    }
+
+    private List<String> joins(String fromAndJoins) {
+        List<String> joins = new ArrayList<>();
+        Matcher matcher = Pattern.compile("(?i)\\b((?:left|right|inner|full|cross)\\s+join|join)\\s+(.+?)(?=\\b(?:left|right|inner|full|cross)?\\s*join\\b|$)")
+                .matcher(fromAndJoins);
+        while (matcher.find()) {
+            String type = matcher.group(1).toUpperCase(Locale.ROOT).replaceAll("\\s+", " ");
+            String body = matcher.group(2).trim();
+            String[] parts = body.split("(?i)\\s+on\\s+", 2);
+            if (parts.length == 2) {
+                joins.add(type + " " + parts[0].trim() + " ON " + parts[1].trim());
+            } else {
+                joins.add(type + " " + body);
+            }
+        }
+        return joins;
+    }
+
+    private void appendNode(StringBuilder out, String title, String detail) {
+        out.append("    |\n");
+        out.append("    v\n");
+        out.append('[').append(title).append("]\n");
+        out.append("  ").append(detail).append('\n');
     }
 }

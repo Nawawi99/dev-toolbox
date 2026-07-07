@@ -7,10 +7,10 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 $InputDir = Join-Path $Root "target\package\input"
-$IconPng = Join-Path $Root "src\main\resources\icons\backend-toolbox.png"
-$IconIco = Join-Path $Root "target\package\backend-toolbox.ico"
-$Jar = Join-Path $Root "target\toolbox-1.0-SNAPSHOT.jar"
-$MainJar = Join-Path $InputDir "backend-toolbox.jar"
+$IconPng = Join-Path $Root "src\main\resources\icons\dev-toolbox.png"
+$IconIco = Join-Path $Root "target\package\dev-toolbox.ico"
+$Jar = Join-Path $Root "target\dev-toolbox-1.0-SNAPSHOT.jar"
+$MainJar = Join-Path $InputDir "dev-toolbox.jar"
 $Dest = Join-Path $Root "dist"
 
 Push-Location $Root
@@ -39,10 +39,10 @@ try {
 
     jpackage `
         --type $Type `
-        --name "Backend Toolbox" `
+        --name "Dev Toolbox" `
         --app-version $Version `
         --input $InputDir `
-        --main-jar "backend-toolbox.jar" `
+        --main-jar "dev-toolbox.jar" `
         --main-class "dev.awn.Main" `
         --dest $Dest `
         --icon $IconIco `

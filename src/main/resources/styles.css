@@ -16,6 +16,27 @@
     -fx-padding: 0 0 12 0;
 }
 
+.search-box {
+    -fx-padding: 0 0 8 0;
+}
+
+.nav-search {
+    -fx-background-radius: 6;
+    -fx-padding: 8 10;
+}
+
+.search-clear-button {
+    -fx-background-color: #252b34;
+    -fx-text-fill: #d9e0ea;
+    -fx-min-width: 34;
+    -fx-pref-width: 34;
+    -fx-padding: 8 0;
+}
+
+.search-clear-button:hover {
+    -fx-background-color: #343c48;
+}
+
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #d9e0ea;
@@ -42,6 +63,10 @@
 .code-area {
     -fx-font-family: "Cascadia Mono", Consolas, monospace;
     -fx-font-size: 13;
+}
+
+.html-preview {
+    -fx-background-color: white;
 }
 
 .text-area, .text-field, .combo-box-base {

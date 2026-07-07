@@ -23,11 +23,11 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact: backend-toolbox-windows-installer
+            artifact: dev-toolbox-windows-installer
           - os: macos-latest
-            artifact: backend-toolbox-macos-installer
+            artifact: dev-toolbox-macos-installer
           - os: ubuntu-latest
-            artifact: backend-toolbox-linux-installer
+            artifact: dev-toolbox-linux-installer
 
     steps:
       - name: Checkout

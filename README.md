@@ -1,6 +1,6 @@
-# Backend Toolbox
+# Dev Toolbox
 
-Backend Toolbox is a fast, offline desktop app for backend developers. It keeps common daily tools in one local app, with no accounts, cloud services, paid APIs, or telemetry.
+Dev Toolbox is a fast, offline desktop app for developers. It keeps common daily tools in one local app, with no accounts, cloud services, paid APIs, or telemetry.
 
 It includes tools for JSON, JWT, YAML, SQL, Regex, Time conversion, Encoding/Hashing, Log filtering, and Docker Compose inspection.
 
@@ -9,7 +9,7 @@ It includes tools for JSON, JWT, YAML, SQL, Regex, Time conversion, Encoding/Has
 Download the installer for your operating system from the GitHub release:
 
 - Windows: download the `.exe` installer and run it.
-- macOS: download the `.dmg`, open it, and drag Backend Toolbox into Applications.
+- macOS: download the `.dmg`, open it, and drag Dev Toolbox into Applications.
 - Linux: download the `.deb` and install it with your package manager.
 
 ## Run From Source
