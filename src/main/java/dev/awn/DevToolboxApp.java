@@ -20,6 +20,7 @@ public class DevToolboxApp extends Application {
         }
         stage.setMinWidth(980);
         stage.setMinHeight(680);
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
     }
