@@ -1,0 +1,97 @@
+.app-root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #15181d;
+    -fx-text-fill: #eef2f7;
+}
+
+.sidebar {
+    -fx-background-color: #101318;
+    -fx-pref-width: 230;
+}
+
+.app-title {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 0 12 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d9e0ea;
+    -fx-alignment: center-left;
+    -fx-padding: 10 12;
+    -fx-background-radius: 6;
+}
+
+.nav-button:hover {
+    -fx-background-color: #252b34;
+}
+
+.tool-page {
+    -fx-padding: 18;
+    -fx-background-color: #15181d;
+}
+
+.tool-heading {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f3f6fb;
+}
+
+.code-area {
+    -fx-font-family: "Cascadia Mono", Consolas, monospace;
+    -fx-font-size: 13;
+}
+
+.text-area, .text-field, .combo-box-base {
+    -fx-control-inner-background: #20252d;
+    -fx-background-color: #20252d;
+    -fx-text-fill: #eef2f7;
+    -fx-prompt-text-fill: #8c97a6;
+}
+
+.button {
+    -fx-background-color: #2f6feb;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+}
+
+.button:hover {
+    -fx-background-color: #3d7cf3;
+}
+
+.copy-button {
+    -fx-background-color: #d9a441;
+    -fx-text-fill: #15181d;
+}
+
+.copy-button:hover {
+    -fx-background-color: #f0bd54;
+}
+
+.clear-button {
+    -fx-background-color: #b64b4b;
+    -fx-text-fill: white;
+}
+
+.clear-button:hover {
+    -fx-background-color: #d45b5b;
+}
+
+.check-box, .label {
+    -fx-text-fill: #d9e0ea;
+}
+
+.status {
+    -fx-padding: 8 10;
+    -fx-background-radius: 6;
+    -fx-background-color: #1f2d23;
+    -fx-text-fill: #9ee6a8;
+}
+
+.status.error {
+    -fx-background-color: #392020;
+    -fx-text-fill: #ffb4b4;
+}

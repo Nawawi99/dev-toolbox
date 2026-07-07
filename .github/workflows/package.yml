@@ -1,0 +1,110 @@
+name: Package Desktop Apps
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Application version"
+        required: true
+        default: "1.0.0"
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Package ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: backend-toolbox-windows-installer
+          - os: macos-latest
+            artifact: backend-toolbox-macos-installer
+          - os: ubuntu-latest
+            artifact: backend-toolbox-linux-installer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Windows packaging tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install wixtoolset --no-progress -y
+          $wix = Get-ChildItem "C:\Program Files (x86)" -Directory -Filter "WiX Toolset v*" |
+            Sort-Object Name -Descending |
+            Select-Object -First 1
+          if (-not $wix) { throw "WiX Toolset was not found after installation." }
+          Join-Path $wix.FullName "bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install Linux packaging tools
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot
+
+      - name: Package Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (Test-Path dist) { Remove-Item -LiteralPath dist -Recurse -Force }
+          .\package\windows.ps1 -Version "${{ steps.version.outputs.value }}" -Type exe
+
+      - name: Package macOS installer
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          rm -rf dist
+          chmod +x package/macos.sh
+          ./package/macos.sh "${{ steps.version.outputs.value }}" dmg
+
+      - name: Package Linux installer
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          rm -rf dist
+          chmod +x package/linux.sh
+          ./package/linux.sh "${{ steps.version.outputs.value }}" deb
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.deb
+
+      - name: Attach installers to GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.deb
